@@ -5,6 +5,8 @@ long timer = 0;
 int n =0;
 float x, y, z;
 
+int nIteration=20;
+
 void setup() {
     Serial.begin(9600); 
     Wire.begin();
@@ -21,7 +23,13 @@ void setup() {
     mpu.calcOffsets(true,true); 
 } 
 void loop() {
-    mpu.update();
-    Serial.println("{\"x\":"+String(mpu.getAccX())+",\"y\":"+String(mpu.getAccY())+",\"z\":"+String(mpu.getAccZ())+"}");
-    delay(50);
+    float xSum=0,ySum=0,zSum=0;
+    for(int i=0;i<nIteration;i++){
+      mpu.update();
+      xSum+=mpu.getAccX();
+      ySum+=mpu.getAccY();
+      zSum+=mpu.getAccZ();
+    }
+    Serial.println("{\"x\":"+String(xSum/nIteration)+",\"y\":"+String(ySum/nIteration)+",\"z\":"+String(zSum/nIteration)+"}");
+    delay(30);
 }

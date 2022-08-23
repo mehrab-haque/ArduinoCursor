@@ -17,6 +17,7 @@ while 1:
         serialString = serialPort.readline()
         try:
             accData=json.loads(str(serialString.decode("Ascii")))
+
             yEffective=accData['x']
             if yEffective<0:
                 yEffective=0
@@ -24,7 +25,14 @@ while 1:
                 yEffective=0.75
             yPct=yEffective*100/0.75
 
-            mouse.move(str(int(screenWidth/2)),str(int(screenHeight*(100-yPct)/100)))
+            xEffective = accData['y']
+            if xEffective < -0.5:
+                xEffective = -0.5
+            if xEffective > 0.5:
+                xEffective = 0.5
+            xPct = (xEffective+0.5) * 100
+
+            mouse.move(str(int(screenWidth*xPct/100)),str(int(screenHeight*(100-yPct)/100)))
             print(yPct)
         except Exception as e:
             print(e)
